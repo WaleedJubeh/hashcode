@@ -9,17 +9,19 @@ struct Library{
     int signupDays;
     int numberCanPrint;
     vector<int> books;
+    double valueToTime;
 
 };
-vector<int> getData(Library lib){
+vector<int> getData(Library lib,int n){
     vector<int> result;
-    for(int i =0 ;i <lib.books.size();i++)
+    for(int i =0 ;i <lib.books.size() && n;i++)
     {
         int book =  lib.books[i];
        if(! visited[book])
        {
         result.push_back(book);
         visited[book]=1;
+        n--;
        }
     }
     return result;
@@ -30,10 +32,10 @@ bool maxScore(int a , int b)
 }
 bool comp(Library a, Library b)
     {
-        if(a.signupDays > b.signupDays)
-             return a.signupDays < b.signupDays;
-        else if (a.signupDays == b.signupDays)
-                return a.books.size() > b.books.size();
+        if(a.valueToTime < b.valueToTime)
+             return a.valueToTime > b.valueToTime;
+             else //if (a.signupDays == b.signupDays)
+                return a.signupDays < b.signupDays;
     }
 vector<Library > adj;
 
@@ -70,6 +72,10 @@ int main() {
             newOne.books.push_back(book);
         }
         sort(newOne.books.rbegin(),newOne.books.rend(),maxScore);
+            double sum=0;
+        for(int k = 0 ;k< newOne.books.size() && k < 15;k++)
+            sum+=newOne.books[k];
+        newOne.valueToTime = sum/(newOne.signupDays * 25);
         adj[i] = newOne;
     }
     // Lets work
@@ -79,7 +85,7 @@ int main() {
     int x =0;
     for( i= 0 ;i < libraries && days < finishDays;i++)
     {
-        vector<int> res = getData(adj[i]);
+        vector<int> res = getData(adj[i], (finishDays- days)*adj[i].numberCanPrint );
         if(res.size() == 0)
             continue;
 
@@ -92,6 +98,7 @@ int main() {
         cout<<endl;
     }
     cout<<x<<endl;
+    int count = 0;
     //process
 
     return 0;
